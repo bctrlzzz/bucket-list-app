@@ -1,7 +1,10 @@
+import { Sidebar } from "@/components/sidebar";
+import { colors } from "@/constants/theme";
 import { Inter_400Regular, Inter_600SemiBold, useFonts } from '@expo-google-fonts/inter';
-import { Stack } from "expo-router";
+import { Slot } from "expo-router";
 import * as SplashScreen from 'expo-splash-screen';
 import { useEffect } from "react";
+import { StyleSheet, View } from "react-native";
 
 // splash screen visible until fonts are ready
 SplashScreen.preventAutoHideAsync();
@@ -15,6 +18,24 @@ export default function RootLayout() {
 
   if (!fontsLoaded) return null;
   
-  // hide stack header
-  return <Stack screenOptions={{ headerShown: false }}/>;
+  return (
+    <View style={styles.app}>
+      <Sidebar/>
+      <View style={styles.content}>
+        {/* current screen inside Slot */}
+        <Slot/>
+      </View>
+    </View>
+  );
 }
+
+const styles = StyleSheet.create ({
+  app: {
+    flex: 1,
+    flexDirection: 'row',
+    backgroundColor: colors.background,
+  },
+  content: {
+    flex: 1,
+  }
+})
