@@ -1,17 +1,57 @@
-import { StyleSheet, View } from 'react-native';
+import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
+import { StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Plan } from '@/data/types';
 
+// receiving props in PlanCard
 type Props = {
     plan: Plan;
     collectionTitle?: string;
 }
 
 export function PlanCard({ plan, collectionTitle } : Props) {
+    const location = [plan.place, plan.city].filter(Boolean).join(', ');
+
     return (
         <View style={[ styles.card, plan.pinned && styles.cardPinned ]}>
-             <View style={styles.topRow}></View>
+             <View style={styles.topRow}>
+                {plan.pinned ? (
+                    <View style={styles.pinnedChip}>
+                        <MaterialCommunityIcons name="pin" size={10} color={colors.onAccent} />
+                        <Text style={styles.pinnedText}>Fijado</Text>
+                    </View>
+                ) : (
+                    <View/>
+                )}
+                <View style={styles.actions}>
+                    <MaterialCommunityIcons
+                        name={plan.pinned ? 'pin' : 'pin-outline'}
+                        size={13}
+                        color={plan.pinned ? colors.accent : colors.textMuted}
+                    />
+                    <Feather name="circle" size={15} color={colors.textMuted}></Feather>
+                </View>
+             </View>
+
+            {/* plan's cover photo */}
+             <View style={styles.cover}></View>
+
+             {plan.category ? <Text style={styles.category}>{plan.category}</Text> : null }
+
+             <Text style={styles.title}>{plan.title}</Text>
+
+             {location ? (
+                <View style={styles.location}>
+                    <Feather name='map-pin' size={10} color={colors.textMuted}/>
+                    <Text style={styles.locationText}>{location}</Text>
+                </View>
+             ) : null}
+
+             <View style={styles.footer}>
+                <Text style={styles.footerText}>{collectionTitle}</Text>
+                <Feather name="arrow-up-right" size={12} color={colors.textMuted}></Feather>
+             </View>
         </View>
     )
 }
