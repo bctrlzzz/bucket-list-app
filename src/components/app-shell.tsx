@@ -27,7 +27,6 @@ export function AppShell({ children } : Props) {
     }
     return (
         <View style={[styles.column, {paddingTop: insets.top }]}>
-
             <View style={styles.content}>{children}</View>
             <BottomBar/>
         </View>

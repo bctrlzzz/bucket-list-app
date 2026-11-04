@@ -18,16 +18,6 @@ export default function RootLayout() {
 
   if (!fontsLoaded) return null;
   
-  // return (
-  //   <View style={styles.app}>
-  //     <Sidebar/>
-  //     <View style={styles.content}>
-  //       {/* current screen inside Slot */}
-  //       <Slot/>
-  //     </View>
-  //   </View>
-  // );
-
   return (
     <AppShell>
       <Slot/>
