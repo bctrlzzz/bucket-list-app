@@ -8,14 +8,15 @@ export type NavItem = {
     href: Href;
     label: string;
     icon: IconName;
+    showOnPhone: boolean;
 };
 
 export const navItems: NavItem[] = [
- { href: '/', label: 'Mis planes', icon: 'layers'},   
- { href: '/profile', label: 'Mi perfil', icon: 'user'},   
- { href: '/calendar', label: 'Mi calendario', icon: 'calendar'},   
- { href: '/shared', label: 'Compartidos', icon: 'users'},   
- { href: '/near-me', label: 'Cerca de mí', icon: 'map-pin'},   
- { href: '/tiktok', label: 'TikTok', icon: 'music'},
- { href: '/plan', label: 'Planificar mi 2027', icon: 'activity'},
+ { href: '/', label: 'Mis planes', icon: 'layers', showOnPhone: true},   
+ { href: '/profile', label: 'Mi perfil', icon: 'user', showOnPhone: false},   
+ { href: '/calendar', label: 'Mi calendario', icon: 'calendar', showOnPhone: true},   
+ { href: '/shared', label: 'Compartidos', icon: 'users', showOnPhone: false},    
+ { href: '/near-me', label: 'Cerca de mí', icon: 'map-pin', showOnPhone: true},    
+ { href: '/tiktok', label: 'TikTok', icon: 'music', showOnPhone: true},   
+ { href: '/plan', label: 'Planificar mi 2027', icon: 'activity', showOnPhone: false},   
 ]

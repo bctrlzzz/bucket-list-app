@@ -40,3 +40,6 @@ export const radius = {
   lg: 9,
   pill: 100,
 } as const;
+
+// bottom bar breakpoint = 900
+export const wideBreakpoint = 900;
