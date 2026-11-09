@@ -5,6 +5,16 @@ import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
+// how many cards in a row
+function columnsFor(width: number) {
+  if (width >= 1300) return 5;
+  if (width >= 1000) return 4;
+  if (width >= 700) return 3;
+  if (width >= 460) return 2;
+  return 1;
+}
+
+// database
 async function fetchMyPlans() {
   const plansResult = await supabase
     .from('plans')
@@ -24,12 +34,14 @@ async function fetchMyPlans() {
     }
 }
 
+// screen
 export default function MyPlansScreen() {
   const [plans, setPlans] = useState<Plan[]>([]);
   const [collections, setCollections] = useState<Collection[]>([]);
   const [loading, setLoading] = useState(true);
   const [error, setError] = useState(false);
   const [reloadCount, setReloadCount] = useState(0);
+  const [contentWidth, setContentWidth] = useState(0);
 
   useEffect(()=> {
     fetchMyPlans()
@@ -43,6 +55,7 @@ export default function MyPlansScreen() {
   }, [reloadCount]);
 
   function retry() {
+    setError(false);
     setLoading(true);
     setReloadCount((count) => count + 1);
   }
@@ -72,6 +85,8 @@ export default function MyPlansScreen() {
 
   // display not completed plans
   const todoPlans = plans.filter((plan) => plan.completed_at === null);
+  const columns = columnsFor(contentWidth);
+  const cardWidth = Math.floor((contentWidth - spacing.md * (columns - 1)) / columns);
 
   return (
     // scrollable box when cards don't fit the screen
@@ -84,19 +99,23 @@ export default function MyPlansScreen() {
         <Text style={styles.count}>{todoPlans.length}</Text>
       </View>
 
-      {todoPlans.length === 0 ? (
-        <Text style={styles.message}>Todavía no tienes planes por hacer.</Text>
-      ) : (
-        <View style={styles.grid}>
-          {todoPlans.map((plan) => (
-            <PlanCard
-              key={plan.id}
-              plan={plan}
-              collectionTitle={collectionTitle(plan.collection_id)}
-            />
-          ))}
-        </View>
-      )}
+      {/* on layout tells the box's size */}
+      <View onLayout={(event => setContentWidth(event.nativeEvent.layout.width))}>
+        {todoPlans.length === 0 ? (
+          <Text style={styles.message}>Todavía no tienes planes por hacer.</Text>
+        ) : (
+          <View style={styles.grid}>
+            {todoPlans.map((plan) => (
+              <PlanCard
+                key={plan.id}
+                plan={plan}
+                width={cardWidth}
+                collectionTitle={collectionTitle(plan.collection_id)}
+              />
+            ))}
+          </View>
+        )}
+      </View>
     </ScrollView>
   );
 }

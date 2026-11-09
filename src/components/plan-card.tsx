@@ -7,14 +7,24 @@ import type { Plan } from '@/data/types';
 // receiving props in PlanCard
 type Props = {
     plan: Plan;
+    width: number; // card width through a prop
     collectionTitle?: string;
 }
 
-export function PlanCard({ plan, collectionTitle } : Props) {
+function formatDate(isoDate: string) {
+  return new Date(isoDate).toLocaleDateString('es-ES', {
+    day: 'numeric',
+    month: 'short',
+    year: 'numeric',
+  });
+}
+
+export function PlanCard({ plan, width, collectionTitle } : Props) {
+    const isDone = plan.completed_at !== null;
     const location = [plan.place, plan.city].filter(Boolean).join(', ');
 
     return (
-        <View style={[ styles.card, plan.pinned && styles.cardPinned ]}>
+        <View style={[ styles.card, {width}, plan.pinned && styles.cardPinned ]}>
              <View style={styles.topRow}>
                 {plan.pinned ? (
                     <View style={styles.pinnedChip}>
@@ -25,12 +35,17 @@ export function PlanCard({ plan, collectionTitle } : Props) {
                     <View/>
                 )}
                 <View style={styles.actions}>
+                  {isDone ? null : (
                     <MaterialCommunityIcons
                         name={plan.pinned ? 'pin' : 'pin-outline'}
                         size={13}
                         color={plan.pinned ? colors.accent : colors.textMuted}
                     />
-                    <Feather name="circle" size={15} color={colors.textMuted}></Feather>
+                  )}
+                    <Feather
+                      name={isDone ? 'check-circle' : 'circle'}
+                      size={15}
+                      color={isDone ? colors.accent : colors.textMuted}/>
                 </View>
              </View>
 
@@ -49,7 +64,9 @@ export function PlanCard({ plan, collectionTitle } : Props) {
              ) : null}
 
              <View style={styles.footer}>
-                <Text style={styles.footerText}>{collectionTitle}</Text>
+                <Text style={styles.footerText}>
+                  {plan.completed_at ? `Completado el ${formatDate(plan.completed_at)}` : collectionTitle}
+                </Text>
                 <Feather name="arrow-up-right" size={12} color={colors.textMuted}></Feather>
              </View>
         </View>
@@ -58,7 +75,6 @@ export function PlanCard({ plan, collectionTitle } : Props) {
 
 const styles = StyleSheet.create({
   card: {
-    width: 220,
     backgroundColor: colors.surface,
     borderWidth: 1,
     borderColor: colors.border,
