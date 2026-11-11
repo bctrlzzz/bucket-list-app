@@ -5,6 +5,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { navItems } from '@/constants/navigation';
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 
+// switch between screens
 export function Sidebar() {
     // highlight current nav item
     const pathname = usePathname();

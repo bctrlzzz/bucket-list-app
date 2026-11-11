@@ -1,4 +1,6 @@
 import { PlanCard } from '@/components/plan-card';
+import { UnderlineTabs } from '@/components/underline-tabs';
+
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Collection, Plan } from '@/data/types';
 import { supabase } from '@/lib/supabase';
@@ -42,6 +44,7 @@ export default function MyPlansScreen() {
   const [error, setError] = useState(false);
   const [reloadCount, setReloadCount] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
+  const [tab, setTab] = useState('todo');
 
   useEffect(()=> {
     fetchMyPlans()
@@ -85,6 +88,9 @@ export default function MyPlansScreen() {
 
   // display not completed plans
   const todoPlans = plans.filter((plan) => plan.completed_at === null);
+  const donePlans = plans.filter((plan) => plan.completed_at !== null);
+  const visiblePlans = tab === 'todo' ? todoPlans : donePlans;
+
   const columns = columnsFor(contentWidth);
   const cardWidth = Math.floor((contentWidth - spacing.md * (columns - 1)) / columns);
 
@@ -94,16 +100,31 @@ export default function MyPlansScreen() {
       <Text style={styles.title}>Mis planes</Text>
       <Text style={styles.subtitle}>Las ideas de hoy, los buenos recuerdos de mañana.</Text>
 
+      <UnderlineTabs 
+        active={tab}
+        onChange={setTab}
+        tabs={[
+          {key: 'todo', label: 'Por hacer', count: todoPlans.length},
+          {key: 'done', label: 'Completados', count: donePlans.length}
+        ]}
+      />
+
       <View style={styles.sectionHeader}>
-        <Text style={styles.sectionTitle}>Planes por hacer</Text>
+        <Text style={styles.sectionTitle}>
+          {tab === 'todo' ? 'Planes por hacer' : 'Planes completados'}
+        </Text>
         <Text style={styles.count}>{todoPlans.length}</Text>
       </View>
 
       {/* on layout tells the box's size */}
       <View onLayout={(event => setContentWidth(event.nativeEvent.layout.width))}>
         {todoPlans.length === 0 ? (
-          <Text style={styles.message}>Todavía no tienes planes por hacer.</Text>
-        ) : (
+          <Text style={styles.message}>
+            {tab === 'todo' ? 'Planes por hacer' : 'Todavía no tienes planes por hacer.'}
+            </Text>
+        ) : null }
+
+        {contentWidth > 0 && visiblePlans.length > 0 ? (
           <View style={styles.grid}>
             {todoPlans.map((plan) => (
               <PlanCard
@@ -114,7 +135,7 @@ export default function MyPlansScreen() {
               />
             ))}
           </View>
-        )}
+        ) : null}
       </View>
     </ScrollView>
   );
