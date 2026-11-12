@@ -21,10 +21,14 @@ async function fetchMyPlans() {
   const plansResult = await supabase
     .from('plans')
     .select()
+    .is('archived_at', null) // where archived_at is empty
     .order('pinned', { ascending: false })
-    .order('created_at', { ascending: false })
+    .order('created_at', { ascending: false });
 
-    const collectionsResult = await supabase.from('collections').select();
+    const collectionsResult = await supabase
+    .from('collections')
+    .select()
+    .is('archived_at', null);
 
     if (plansResult.error || collectionsResult.error) {
       throw new Error('Could not load plans');

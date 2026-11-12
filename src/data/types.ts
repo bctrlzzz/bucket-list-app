@@ -6,6 +6,7 @@ export type Collection = {
   description: string | null;
   location: string | null;
   created_at: string;
+  archived_at: string;
 };
 
 export type Plan = {
@@ -18,4 +19,5 @@ export type Plan = {
   pinned: boolean;
   completed_at: string | null;
   created_at: string;
+  archived_at: string;
 };
