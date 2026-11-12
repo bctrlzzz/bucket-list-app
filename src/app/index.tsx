@@ -7,6 +7,9 @@ import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import { Feather } from '@expo/vector-icons';
+import { Link } from 'expo-router';
+
 // how many cards in a row
 function columnsFor(width: number) {
   if (width >= 1300) return 5;
@@ -101,8 +104,19 @@ export default function MyPlansScreen() {
   return (
     // scrollable box when cards don't fit the screen
     <ScrollView style={styles.scroll} contentContainerStyle={styles.page}>
-      <Text style={styles.title}>Mis planes</Text>
-      <Text style={styles.subtitle}>Las ideas de hoy, los buenos recuerdos de mañana.</Text>
+      <View style={styles.header}>
+        <View style={styles.headerText}>
+          <Text style={styles.title}>Mis planes</Text>
+          <Text style={styles.subtitle}>Las ideas de hoy, los buenos recuerdos de mañana.</Text>
+        </View>
+      </View>
+
+      <Link href="/plan/new" asChild>
+        <Pressable style={styles.addButton}>
+          <Feather name="plus" size={14} color={colors.onAccent}></Feather>
+          <Text style={styles.addButtonText}>Añadir plan</Text>
+        </Pressable>
+      </Link>
 
       <UnderlineTabs 
         active={tab}
@@ -208,5 +222,31 @@ const styles = StyleSheet.create({
     flexDirection: 'row',
     flexWrap: 'wrap',
     gap: spacing.md,
+  },
+    header: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    alignItems: 'flex-start',
+    gap: spacing.lg,
+  },
+  headerText: {
+    flexShrink: 1,
+  },
+  addButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    alignSelf: 'flex-end',
+    gap: spacing.sm,
+    height: 34,
+    paddingHorizontal: spacing.md,
+    borderRadius: radius.md,
+    backgroundColor: colors.accent,
+    marginTop: spacing.md,
+  },
+  addButtonText: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.small,
+    color: colors.onAccent,
   },
 });
