@@ -63,7 +63,7 @@ export default function NewPlanScreen() {
                 <TextField label="Título" value={title} onChangeText={setTitle} placeholder='Título' required></TextField>
                 <TextField label="Categoría" value={category} onChangeText={setCategory} placeholder='Categoría'></TextField>
                 <TextField label="Lugar" value={place} onChangeText={setPlace} placeholder='Lugar'></TextField>
-                <TextField label="Ciudad" value={title} onChangeText={setCity} placeholder='Ciudad'></TextField>
+                <TextField label="Ciudad" value={city} onChangeText={setCity} placeholder='Ciudad'></TextField>
                 
                 {/* collections */}
                 <Text style={styles.label}>Colección</Text>
