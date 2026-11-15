@@ -11,6 +11,7 @@ type Props = {
     collectionTitle?: string;
     onTogglePinned: () => void;
     onToggleCompleted: () => void;
+    onOpen: () => void;
 }
 
 function formatDate(isoDate: string) {
@@ -21,7 +22,7 @@ function formatDate(isoDate: string) {
   });
 }
 
-export function PlanCard({ plan, width, collectionTitle, onTogglePinned, onToggleCompleted } : Props) {
+export function PlanCard({ plan, width, collectionTitle, onTogglePinned, onToggleCompleted, onOpen } : Props) {
     const isDone = plan.completed_at !== null;
     const location = [plan.place, plan.city].filter(Boolean).join(', ');
 
@@ -63,6 +64,7 @@ export function PlanCard({ plan, width, collectionTitle, onTogglePinned, onToggl
              </View>
 
             {/* plan's cover photo */}
+            <Pressable onPress={onOpen} accessibilityRole='link' accessibilityLabel={`Abrir ${plan.title}`}>
              <View style={styles.cover}></View>
 
              {plan.category ? <Text style={styles.category}>{plan.category}</Text> : null }
@@ -82,6 +84,7 @@ export function PlanCard({ plan, width, collectionTitle, onTogglePinned, onToggl
                 </Text>
                 <Feather name="arrow-up-right" size={12} color={colors.textMuted}></Feather>
              </View>
+            </Pressable>
         </View>
     )
 }
