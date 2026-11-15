@@ -136,13 +136,19 @@ export default function PlanDetailScreen() {
             {error ? <Text style={styles.error}>{error}</Text>: null}
 
             <View style={styles.actions}>
+                <Link href={{ pathname: '/plan/[id]/edit', params: { id: plan.id } }} asChild>
+                <Pressable style={styles.actionButton}>
+                  <Feather name="edit-2" size={14} color={colors.text} />
+                  <Text style={styles.actionText}>Editar</Text>
+                </Pressable>
+                </Link>
                 <Pressable
                     style={[styles.actionButton, busy && styles.busy]}
                     onPress={duplicate}
                     disabled={busy}>
-                        <Feather name="archive" size={14} color={colors.text}></Feather>
-                        <Text style={styles.actionText}>Archivar</Text>
-                    </Pressable>
+                    <Feather name="archive" size={14} color={colors.text}></Feather>
+                    <Text style={styles.actionText}>Archivar</Text>
+                </Pressable>
             </View>
         </ScrollView>
     )
