@@ -1,5 +1,5 @@
 import { Feather, MaterialCommunityIcons } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Plan } from '@/data/types';
@@ -9,6 +9,8 @@ type Props = {
     plan: Plan;
     width: number; // card width through a prop
     collectionTitle?: string;
+    onTogglePinned: () => void;
+    onToggleCompleted: () => void;
 }
 
 function formatDate(isoDate: string) {
@@ -19,7 +21,7 @@ function formatDate(isoDate: string) {
   });
 }
 
-export function PlanCard({ plan, width, collectionTitle } : Props) {
+export function PlanCard({ plan, width, collectionTitle, onTogglePinned, onToggleCompleted } : Props) {
     const isDone = plan.completed_at !== null;
     const location = [plan.place, plan.city].filter(Boolean).join(', ');
 
@@ -36,16 +38,27 @@ export function PlanCard({ plan, width, collectionTitle } : Props) {
                 )}
                 <View style={styles.actions}>
                   {isDone ? null : (
+                    <Pressable
+                      onPress={onTogglePinned}
+                      hitSlop={8} // make pressable area 8px bigger
+                      accessibilityLabel={plan.pinned ? 'Quitar de fijados' : 'Fijar plan'}>
                     <MaterialCommunityIcons
                         name={plan.pinned ? 'pin' : 'pin-outline'}
                         size={13}
                         color={plan.pinned ? colors.accent : colors.textMuted}
                     />
+                    </Pressable>
                   )}
+
+                  <Pressable
+                    onPress={onToggleCompleted}
+                    hitSlop={8}
+                    accessibilityLabel={isDone ? 'Marcar por hacer' : 'Marcar como completado'}>
                     <Feather
                       name={isDone ? 'check-circle' : 'circle'}
                       size={15}
                       color={isDone ? colors.accent : colors.textMuted}/>
+                  </Pressable>
                 </View>
              </View>
 

@@ -52,6 +52,7 @@ export default function MyPlansScreen() {
   const [reloadCount, setReloadCount] = useState(0);
   const [contentWidth, setContentWidth] = useState(0);
   const [tab, setTab] = useState('todo');
+  const [actionError, setActionError] = useState<string | null>(null);
 
   useEffect(()=> {
     fetchMyPlans()
@@ -68,6 +69,43 @@ export default function MyPlansScreen() {
     setError(false);
     setLoading(true);
     setReloadCount((count) => count + 1);
+  }
+
+  // pin plan logic
+  async function togglePinned(plan: Plan) {
+    const newPinned = !plan.pinned;
+    
+    const {error: updateError} = await supabase
+      .from('plans')
+      .update({ pinned: newPinned })
+      .eq('id', plan.id) // update plan whith that id
+
+      if (updateError) {
+        setActionError('No hemos podido actualizar el plan. Inténtalo de nuevo.');
+        return;
+      }
+
+      setActionError(null);
+      setPlans((current) => current.map((p) => (p.id === plan.id ? { ...p, pinned: newPinned } : p)),
+    );
+  }
+
+  // complete plan logic
+  async function toggleCompleted(plan: Plan) {
+    const newCompletedAt = plan.completed_at ? null : new Date().toISOString();
+
+    const {error: updateError} = await supabase
+      .from('plans')
+      .update({ completed_at: newCompletedAt, pinned: false })
+      .eq('id', plan.id);
+
+      if (updateError) {
+        setActionError('No hemos podido guardar el cambio. Inténtalo de nuevo.')
+        return;
+      }
+
+      setActionError(null);
+      setPlans((current) => current.map((p) => p.id === plan.id ? { ...p, completed_at: newCompletedAt, pinned: false} : p))
   }
 
   function collectionTitle(collectionId: string | null) {
@@ -94,8 +132,14 @@ export default function MyPlansScreen() {
   }
 
   // display not completed plans
-  const todoPlans = plans.filter((plan) => plan.completed_at === null);
-  const donePlans = plans.filter((plan) => plan.completed_at !== null);
+  const todoPlans = plans
+    .filter((plan) => plan.completed_at === null)
+    .sort((a, b) => Number(b.pinned) - Number(a.pinned)); // 1 (pinned) before 0 (not pinned)
+  
+  const donePlans = plans
+    .filter((plan) => plan.completed_at !== null)
+    .sort((a, b) => (b.completed_at ?? '').localeCompare(a.completed_at ?? '')); // most recently completed first
+
   const visiblePlans = tab === 'todo' ? todoPlans : donePlans;
 
   const columns = columnsFor(contentWidth);
@@ -127,29 +171,35 @@ export default function MyPlansScreen() {
         ]}
       />
 
+      {actionError ?
+        <Text style={styles.actionError}>{actionError}</Text>
+      : null } 
+
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>
           {tab === 'todo' ? 'Planes por hacer' : 'Planes completados'}
         </Text>
-        <Text style={styles.count}>{todoPlans.length}</Text>
+        <Text style={styles.count}>{visiblePlans.length}</Text>
       </View>
 
       {/* on layout tells the box's size */}
       <View onLayout={(event => setContentWidth(event.nativeEvent.layout.width))}>
-        {todoPlans.length === 0 ? (
+        {visiblePlans.length === 0 ? (
           <Text style={styles.message}>
-            {tab === 'todo' ? 'Planes por hacer' : 'Todavía no tienes planes por hacer.'}
+            {tab === 'todo' ? 'Planes por hacer.' : 'Todavía no tienes planes por hacer.'}
             </Text>
         ) : null }
 
         {contentWidth > 0 && visiblePlans.length > 0 ? (
           <View style={styles.grid}>
-            {todoPlans.map((plan) => (
+            {visiblePlans.map((plan) => (
               <PlanCard
                 key={plan.id}
                 plan={plan}
                 width={cardWidth}
                 collectionTitle={collectionTitle(plan.collection_id)}
+                onTogglePinned={() => togglePinned(plan)}
+                onToggleCompleted={() => toggleCompleted(plan)}
               />
             ))}
           </View>
@@ -249,4 +299,10 @@ const styles = StyleSheet.create({
     fontSize: fontSize.small,
     color: colors.onAccent,
   },
+  actionError: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.small,
+    color: colors.accent,
+    marginTop: spacing.md,
+  },  
 });
