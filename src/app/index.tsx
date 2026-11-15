@@ -5,10 +5,10 @@ import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Collection, Plan } from '@/data/types';
 import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
-import { Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
+import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
 import { Feather } from '@expo/vector-icons';
-import { Link } from 'expo-router';
+import { Link, router } from 'expo-router';
 
 // how many cards in a row
 function columnsFor(width: number) {
@@ -126,6 +126,7 @@ export default function MyPlansScreen() {
   if (loading) {
     return (
       <View style={styles.center}>
+        <ActivityIndicator color={colors.accent} />
         <Text style={styles.message}>Cargando...</Text>
       </View>
     )
@@ -200,6 +201,7 @@ export default function MyPlansScreen() {
                 collectionTitle={collectionTitle(plan.collection_id)}
                 onTogglePinned={() => togglePinned(plan)}
                 onToggleCompleted={() => toggleCompleted(plan)}
+                onOpen={() => router.push({ pathname: '/plan/[id]', params: {id: plan.id}})}
               />
             ))}
           </View>

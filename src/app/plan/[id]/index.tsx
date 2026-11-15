@@ -24,7 +24,7 @@ function formatDate(isoDate: string) {
 }
 
 export default function PlanDetailScreen() {
-    const {id} = useLocalSearchParams<{id: string}>(); // read address value
+    const {id} = useLocalSearchParams<{id: string}>(); // read address of the screen
     
     const [plan, setPlan] = useState<PlanWithCollection | null>(null);
     const [loading, setLoading] = useState(true);
@@ -95,8 +95,9 @@ export default function PlanDetailScreen() {
     if (loading) {
     return (
       <View style={styles.center}>
-        <ActivityIndicator color={colors.accent}>Cargando...</ActivityIndicator>
-      </View>
+        <ActivityIndicator color={colors.accent} />
+        <Text style={styles.message}>Cargando...</Text>
+    </View>
     )
   }
 
@@ -115,12 +116,13 @@ export default function PlanDetailScreen() {
         <ScrollView style={styles.scroll} contentContainerStyle={styles.page}>
             <Link href="/" asChild>
                 <Pressable style={styles.back}>
-                    <Feather name="arrow-left">Mis planes</Feather>
+                    <Feather name="arrow-left" size={14} color={colors.textMuted} />
+                    <Text style={styles.muted}>Mis planes</Text>
                 </Pressable>
             </Link>
 
-            {plan.category ? <Text style={styles.details}/> : null}
-            <Text style={styles.title}/>{plan.title}<Text/>
+            {plan.category ? <Text style={styles.category}>{plan.category}</Text> : null}
+            <Text style={styles.title}>{plan.title}</Text>
 
             <View style={styles.details}>
                 { location ? <Detail icon="map-pin" text={location}></Detail> : null } 
@@ -243,5 +245,10 @@ const styles = StyleSheet.create({
   },
   busy: {
     opacity: 0.5,
+  },
+  message: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.body,
+    color: colors.textMuted,
   },
 });
