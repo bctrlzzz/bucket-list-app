@@ -3,7 +3,8 @@ import { useEffect, useState } from 'react';
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Collection } from '@/data/types';
 import { supabase } from '@/lib/supabase';
-import { ActivityIndicator, Pressable, StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { FormButtons } from './form-buttons';
 import { TextField } from './text-field';
 
 // what the form works with
@@ -110,23 +111,14 @@ export function PlanForm({initialValues, submitLabel, onSubmit, onCancel } : Pro
         </View>
         
         {error ? <Text style={styles.error}> {error} </Text> : null}
-        
-        <View style={styles.buttons}>
-        <Pressable style={styles.secondaryButton} onPress={onCancel}>
-          <Text style={styles.secondaryButtonText}>Cancelar</Text>
-        </Pressable>
-
-        <Pressable
-            style={[styles.primaryButton, saving && styles.buttonBusy]}
-            onPress={submit}
-            disabled={saving}>
             
-            {saving ? (
-                <ActivityIndicator color={colors.onAccent}/> ) :(
-                    <Text style={styles.primaryButtonText}>{submitLabel}</Text>
-            )}
-        </Pressable>
-        </View>
+        <FormButtons
+          submitLabel={submitLabel}
+          saving={saving}
+          onSubmit={submit} // plan-form's own function
+          onCancel={onCancel} // prop that the plan form receives from each screen
+        ></FormButtons>
+        
         </View>
     )
 }
