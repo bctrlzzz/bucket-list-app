@@ -3,6 +3,7 @@ import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
 
+import { ActionButton } from '@/components/action-button';
 import { PlanCard } from '@/components/plan-card';
 import { UnderlineTabs } from '@/components/underline-tabs';
 import { colors, fonts, fontSize, spacing } from '@/constants/theme';
@@ -20,6 +21,7 @@ export default function CollectionScreen() {
     const [tab, setTab] = useState('todo');
     const [contentWidth, setContentWidth] = useState(0);
     const [actionError, setActionError] = useState<string | null>(null);
+    const [archiving, setArchiving] = useState(false);
 
     useEffect(() => {
         async function load() {
@@ -60,6 +62,24 @@ export default function CollectionScreen() {
         }
         setActionError(null);
         setPlans((current) => applyChanges(current, plan.id, changes));
+    }
+
+    async function archive() {
+        setArchiving(true);
+        setActionError(null);
+
+        const { error } = await supabase
+            .from('collections')
+            .update({ archived_at: new Date().toISOString() })
+            .eq('id', id);
+        
+            if (error) {
+            setActionError('No hemos podido archivar la colección. Inténtalo de nuevo.');
+            setArchiving(false);
+            return;
+        }
+
+        router.replace('/');
     }
 
     if (loading) {
@@ -123,6 +143,18 @@ export default function CollectionScreen() {
                 <Feather name="check-circle" size={12} color={colors.textMuted}></Feather>
                 <Text style={styles.muted}>{donePlans.length} de {todoPlans.length}</Text>
             </View>
+        </View>
+        <View style={styles.actions}>
+            <ActionButton
+                icon="edit-2"
+                label="Editar"
+                onPress={() => router.push({ pathname: '/collection/[id]/edit', params: { id: collection.id }})}
+            ></ActionButton>
+            <ActionButton
+                icon="archive"
+                label="Archivar"
+                onPress={archive}
+            ></ActionButton>
         </View>
       </View>
 
@@ -254,5 +286,11 @@ const styles = StyleSheet.create({
 //   },
   plansSection: {
     marginTop: spacing.xl,
+  },
+  actions: {
+    flexDirection: 'row',
+    flexWrap: 'wrap',
+    gap: spacing.sm,
+    marginTop: spacing.lg,
   }
 });
