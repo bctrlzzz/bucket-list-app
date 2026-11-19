@@ -11,14 +11,9 @@ import { CollectionCard } from '@/components/collection-card';
 import { Feather } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 
-// how many cards in a row
-function columnsFor(width: number) {
-  if (width >= 1300) return 5;
-  if (width >= 1000) return 4;
-  if (width >= 700) return 3;
-  if (width >= 460) return 2;
-  return 1;
-}
+import { applyChanges, toggleCompletedDb, togglePinnedDb } from '@/data/plan-updates';
+import { cardWidthFor } from '@/lib/grid';
+
 
 // database
 async function fetchMyPlans() {
@@ -74,39 +69,28 @@ export default function MyPlansScreen() {
 
   // pin plan logic
   async function togglePinned(plan: Plan) {
-    const newPinned = !plan.pinned;
-    
-    const {error: updateError} = await supabase
-      .from('plans')
-      .update({ pinned: newPinned })
-      .eq('id', plan.id) // update plan whith that id
+      const changes = await togglePinnedDb(plan);
 
-      if (updateError) {
+      if (!changes) {
         setActionError('No hemos podido actualizar el plan. Inténtalo de nuevo.');
         return;
       }
 
       setActionError(null);
-      setPlans((current) => current.map((p) => (p.id === plan.id ? { ...p, pinned: newPinned } : p)),
-    );
+      setPlans((current) => applyChanges(current, plan.id, changes));
   }
 
   // complete plan logic
   async function toggleCompleted(plan: Plan) {
-    const newCompletedAt = plan.completed_at ? null : new Date().toISOString();
+    const changes = await toggleCompletedDb(plan);
 
-    const {error: updateError} = await supabase
-      .from('plans')
-      .update({ completed_at: newCompletedAt, pinned: false })
-      .eq('id', plan.id);
-
-      if (updateError) {
+      if (!changes) {
         setActionError('No hemos podido guardar el cambio. Inténtalo de nuevo.')
         return;
       }
 
       setActionError(null);
-      setPlans((current) => current.map((p) => p.id === plan.id ? { ...p, completed_at: newCompletedAt, pinned: false} : p))
+      setPlans((current) => applyChanges(current, plan.id, changes));
   }
 
   function collectionTitle(collectionId: string | null) {
@@ -144,8 +128,7 @@ export default function MyPlansScreen() {
 
   const visiblePlans = tab === 'todo' ? todoPlans : donePlans;
 
-  const columns = columnsFor(contentWidth);
-  const cardWidth = Math.floor((contentWidth - spacing.md * (columns - 1)) / columns);
+  const cardWidth = cardWidthFor(contentWidth);
 
   return (
     // scrollable box when cards don't fit the screen
