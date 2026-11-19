@@ -190,6 +190,7 @@ export default function MyPlansScreen() {
                     done={doneInCollection.length}
                     total={inCollection.length}
                     width={cardWidth}
+                    onOpen={() => router.push({ pathname: '/collection/[id]', params: { id: collection.id }})}
                   />
                 );
               })}

@@ -1,5 +1,5 @@
 import { Feather } from '@expo/vector-icons';
-import { StyleSheet, Text, View } from 'react-native';
+import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Collection } from '@/data/types';
@@ -9,13 +9,19 @@ type Props = {
     width: number;
     done: number;
     total: number;
+    onOpen: (() => void);
 };
 
-export function CollectionCard({ collection, width, done, total} : Props) {
+export function CollectionCard({ collection, width, done, total, onOpen} : Props) {
     const progress = total === 0 ? 0 : done / total;
 
     return (
-        <View style={[styles.card, { width }]}>
+        <Pressable
+          style={[styles.card, { width }]}
+          onPress={onOpen}
+          accessibilityRole="link"
+          accessibilityLabel={`Abrir ${collection.title}`}
+          >
         <View style={styles.badge}>
             <Feather name="layers" size={11} color={colors.text} />
             <Text style={styles.badgeText}>Colección</Text>
@@ -46,7 +52,7 @@ export function CollectionCard({ collection, width, done, total} : Props) {
             <Text style={styles.locationText}>{collection.location}</Text>
             </View>
         ) : null}
-        </View>
+        </Pressable>
     );
 }
 
