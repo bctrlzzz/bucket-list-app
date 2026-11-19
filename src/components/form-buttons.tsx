@@ -51,10 +51,10 @@ const styles = StyleSheet.create({
   },
   primaryButton: {
     height: 36,
-    minWidth: 120,
+    // minWidth: 120,
     alignItems: 'center',
     justifyContent: 'center',
-    paddingHorizontal: spacing.lg,
+    padding: spacing.lg,
     borderRadius: radius.md,
     backgroundColor: colors.accent,
   },
