@@ -14,8 +14,9 @@ type Props = {
 export function FormButtons( {submitLabel, saving, onSubmit, onCancel} : Props ) {
     return (
         <View style={styles.buttons}>
-            <Pressable style={styles.secondaryButton} onPress={onCancel}></Pressable>
+            <Pressable style={styles.secondaryButton} onPress={onCancel}>
                 <Text style={styles.secondaryButtonText}>Cancelar</Text>
+            </Pressable>
             <Pressable style={[ styles.primaryButton, saving && styles.buttonBusy ]} onPress={onSubmit} disabled={saving}>
                 { saving ? (
                     <ActivityIndicator color={colors.onAccent} />
