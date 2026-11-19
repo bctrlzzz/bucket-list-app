@@ -7,6 +7,7 @@ import { supabase } from '@/lib/supabase';
 import { useEffect, useState } from 'react';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from "react-native";
 
+import { CollectionCard } from '@/components/collection-card';
 import { Feather } from '@expo/vector-icons';
 import { Link, router } from 'expo-router';
 
@@ -156,12 +157,22 @@ export default function MyPlansScreen() {
         </View>
       </View>
 
-      <Link href="/plan/new" asChild>
-        <Pressable style={styles.addButton}>
-          <Feather name="plus" size={14} color={colors.onAccent}></Feather>
-          <Text style={styles.addButtonText}>Añadir plan</Text>
-        </Pressable>
-      </Link>
+      {/* TODO: add button at the bottom bar on mobile */}
+      <View style={styles.headerButtons}> 
+        <Link href="/plan/new" asChild>
+          <Pressable style={styles.addButton}>
+            <Feather name="plus" size={14} color={colors.onAccent}></Feather>
+            <Text style={styles.addButtonText}>Añadir plan</Text>
+          </Pressable>
+        </Link>
+
+        <Link href="/collection/new" asChild>
+          <Pressable style={styles.addButton}>
+            <Feather name="plus" size={14} color={colors.onAccent}></Feather>
+            <Text style={styles.addButtonText}>Crear colección</Text>
+          </Pressable>
+        </Link>
+      </View>
 
       <UnderlineTabs 
         active={tab}
@@ -176,6 +187,35 @@ export default function MyPlansScreen() {
         <Text style={styles.actionError}>{actionError}</Text>
       : null } 
 
+      {/* collections section */}
+      <View onLayout={(event => setContentWidth(event.nativeEvent.layout.width))}>
+        {tab === 'todo' && collections.length > 0 && contentWidth > 0 ? (
+          <>
+            <View style={styles.sectionHeader}>
+              <Text style={styles.sectionTitle}>Tus colecciones</Text>
+              <Text style={styles.count}>{collections.length}</Text>
+            </View>
+            <View style={styles.grid}>
+              {collections.map((collection) => {
+                const inCollection = plans.filter((plan) => plan.collection_id === collection.id);
+                const doneInCollection = inCollection.filter((plan) => plan.completed_at !== null);
+
+                return (
+                  <CollectionCard
+                    key={collection.id}
+                    collection={collection}
+                    done={doneInCollection.length}
+                    total={inCollection.length}
+                    width={cardWidth}
+                  />
+                );
+              })}
+            </View>
+          </>
+        ) : null}
+      </View>
+
+      {/* plans section */}
       <View style={styles.sectionHeader}>
         <Text style={styles.sectionTitle}>
           {tab === 'todo' ? 'Planes por hacer' : 'Planes completados'}
@@ -205,7 +245,7 @@ export default function MyPlansScreen() {
               />
             ))}
           </View>
-        ) : null}
+        ) : null}        
       </View>
     </ScrollView>
   );
@@ -307,4 +347,28 @@ const styles = StyleSheet.create({
     color: colors.accent,
     marginTop: spacing.md,
   },  
+    headerButtons: {
+    flexDirection: 'row',
+    gap: spacing.sm,
+    justifyContent: 'flex-end',
+    alignSelf: 'flex-end',
+    marginTop: spacing.md,
+    flexWrap: 'wrap',
+  },
+  secondaryButton: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    height: 34,
+    paddingHorizontal: spacing.md,
+    borderWidth: 1,
+    borderColor: colors.border,
+    borderRadius: radius.md,
+    backgroundColor: colors.surface,
+  },
+  secondaryButtonText: {
+    fontFamily: fonts.regular,
+    fontSize: fontSize.small,
+    color: colors.text,
+  },
 });
