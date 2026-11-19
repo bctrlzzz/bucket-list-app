@@ -1,3 +1,50 @@
+import { Dimensions } from "react-native";
+
+// bottom bar breakpoint = 900
+export const wideBreakpoint = 900;
+
+const isWideScreen = Dimensions.get('window').width >= wideBreakpoint;
+
+const fontSizeWide = {
+  caption: 10,
+  small: 11,
+  body: 13,
+  cardTitle: 15,
+  heading: 16,
+  title: 28,
+} as const;
+
+const fontSizePhone = {
+  caption: 10,
+  small: 11,
+  body: 12,
+  cardTitle: 14,
+  heading: 15,
+  title: 22,
+} as const;
+
+export const fontSize = isWideScreen ? fontSizeWide : fontSizePhone;
+
+const spacingWide = {
+  xs: 4,
+  sm: 8,
+  md: 12,
+  lg: 16,
+  xl: 24,
+  xxl: 32,
+} as const;
+
+const spacingPhone = {
+  xs: 4,
+  sm: 6,
+  md: 10,
+  lg: 14,
+  xl: 16,
+  xxl: 24,
+} as const;
+
+export const spacing = isWideScreen ? spacingWide : spacingPhone;
+
 export const colors = {
   background: '#FCFCFA',
   sidebar: '#F3F4F0',
@@ -16,24 +63,6 @@ export const fonts = {
   semibold: 'Inter_600SemiBold',
 } as const;
 
-export const fontSize = {
-  caption: 10,
-  small: 11,
-  body: 13,
-  cardTitle: 15,
-  heading: 16,
-  title: 28,
-} as const;
-
-export const spacing = {
-  xs: 4,
-  sm: 8,
-  md: 12,
-  lg: 16,
-  xl: 24,
-  xxl: 32,
-} as const;
-
 export const radius = {
   sm: 5,
   md: 7,
@@ -41,5 +70,3 @@ export const radius = {
   pill: 100,
 } as const;
 
-// bottom bar breakpoint = 900
-export const wideBreakpoint = 900;
