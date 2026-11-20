@@ -19,4 +19,5 @@ export const navItems: NavItem[] = [
  { href: '/near-me', label: 'Cerca de mí', icon: 'map-pin', showOnPhone: true},    
  { href: '/tiktok', label: 'TikTok', icon: 'music', showOnPhone: true},   
  { href: '/plan', label: 'Planificar mi 2027', icon: 'activity', showOnPhone: false},   
+ { href: '/archived', label: 'Archivados', icon: 'archive', showOnPhone: false},   
 ]
