@@ -1,6 +1,7 @@
 import { Link, router, useLocalSearchParams } from 'expo-router';
 import { useEffect, useState } from 'react';
 
+import { ActionButton } from '@/components/action-button';
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Plan } from '@/data/types';
 import { supabase } from '@/lib/supabase';
@@ -80,7 +81,7 @@ export default function PlanDetailScreen() {
         const { error: archiveError } = await supabase
             .from('plans')
             .update({
-                archived_at: ({ archived_at: new Date().toISOString})
+                archived_at: new Date().toISOString()
             })
             .eq('id', plan.id);
         
@@ -136,19 +137,16 @@ export default function PlanDetailScreen() {
             {error ? <Text style={styles.error}>{error}</Text>: null}
 
             <View style={styles.actions}>
-                <Link href={{ pathname: '/plan/[id]/edit', params: { id: plan.id } }} asChild>
-                <Pressable style={styles.actionButton}>
-                  <Feather name="edit-2" size={14} color={colors.text} />
-                  <Text style={styles.actionText}>Editar</Text>
-                </Pressable>
-                </Link>
-                <Pressable
-                    style={[styles.actionButton, busy && styles.busy]}
-                    onPress={duplicate}
-                    disabled={busy}>
-                    <Feather name="archive" size={14} color={colors.text}></Feather>
-                    <Text style={styles.actionText}>Archivar</Text>
-                </Pressable>
+                <ActionButton
+                    icon="edit-2"
+                    label="Editar"
+                    onPress={() => router.push({ pathname: '/plan/[id]/edit', params: { id: plan.id }})}
+                ></ActionButton>
+                <ActionButton
+                    icon="archive"
+                    label="Archivar"
+                    onPress={archive}
+                ></ActionButton>
             </View>
         </ScrollView>
     )
