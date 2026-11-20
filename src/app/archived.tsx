@@ -24,7 +24,7 @@ export default function ArchiveScreen() {
     const [collections, setCollections] = useState<Collection[]>([]);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState<string | null>(null);
-    const [restoringId, setRestoringId] = useState<string | null>(null);
+    const [restoringId, setRestoringId] = useState<string | null>(null); // remembers which row is being restored
 
     useEffect(() => {
         async function load() {
@@ -60,7 +60,7 @@ export default function ArchiveScreen() {
             .update({ archived_at: null })
             .eq('id', id);
         
-        setRestoringId(null);
+        setRestoringId(null); // no row is busy
         setError(null);
 
         if (restoreError) {
@@ -68,6 +68,7 @@ export default function ArchiveScreen() {
             return;
         }
 
+        // update what's on screen
         if (table === 'plans') {
             setPlans((current) => current.filter((item) => item.id !== id));
         } else {
