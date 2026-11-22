@@ -7,6 +7,8 @@ export type Collection = {
   location: string | null;
   created_at: string;
   archived_at: string;
+  start_date: string | null;
+  end_date: string | null;
 };
 
 export type Plan = {
@@ -20,4 +22,17 @@ export type Plan = {
   completed_at: string | null;
   created_at: string;
   archived_at: string;
+  plan_dates?: PlanDate[]; // list of dates that supabase returns when asked for it
 };
+
+// plan date type
+
+export type PlanDate = {
+  id: string;
+  plan_id: string;
+  start_date: string;
+  start_time: string | null;
+  end_time: string |null;
+  end_date: string;
+  created_at: string;
+}
