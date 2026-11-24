@@ -52,6 +52,16 @@ export function CollectionCard({ collection, width, done, total, onOpen} : Props
             <Text style={styles.locationText}>{collection.location}</Text>
             </View>
         ) : null}
+
+        {/* dates */}
+        { collection.start_date && collection.end_date ? (
+          <View style={styles.progressText}>
+            <View style={styles.badge}>
+              <Feather name="calendar" size={10} color={colors.textMuted}></Feather>
+              <Text style={styles.locationText}>{collection.start_date} - {collection.end_date}</Text>
+            </View>
+          </View>
+        ) : null}
         </Pressable>
     );
 }

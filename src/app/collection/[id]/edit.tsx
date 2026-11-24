@@ -3,9 +3,9 @@ import { useEffect, useState } from 'react';
 import { ActivityIndicator, ScrollView, StyleSheet, Text, View } from 'react-native';
 
 import {
-    CollectionForm,
-    toCollectionColumns,
-    type CollectionFormValues,
+  CollectionForm,
+  toCollectionColumns,
+  type CollectionFormValues,
 } from '@/components/collection-form';
 import { colors, fonts, fontSize, spacing } from '@/constants/theme';
 import type { Collection } from '@/data/types';
@@ -26,6 +26,8 @@ export default function EditCollectionScreen() {
           title: collection.title,
           description: collection.description ?? '',
           location: collection.location ?? '',
+          startDate: collection.start_date,
+          endDate: collection.end_date,
         });
       }
       setLoading(false);

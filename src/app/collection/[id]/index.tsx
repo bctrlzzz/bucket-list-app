@@ -74,10 +74,10 @@ export default function CollectionScreen() {
             .eq('id', id);
         
             if (error) {
-            setActionError('No hemos podido archivar la colección. Inténtalo de nuevo.');
-            setArchiving(false);
-            return;
-        }
+              setActionError('No hemos podido archivar la colección. Inténtalo de nuevo.');
+              setArchiving(false);
+              return;
+            }
 
         router.replace('/');
     }
@@ -123,7 +123,7 @@ export default function CollectionScreen() {
       </Link>
 
       <View style={styles.badge}>
-        <Feather name="layers" size={12} color={colors.onAccent}/>
+        <Feather name="layers" size={12} color={styles.badgeText.color}/>
         <Text style={styles.badgeText}>Colección</Text>
       </View>
       <Text style={styles.title}>{collection.title}</Text>
@@ -134,16 +134,24 @@ export default function CollectionScreen() {
       <View>
         <View style={styles.meta}> 
             { collection.location ? (
-                <View style={styles.meta}>
+                <View style={styles.metaItem}>
                     <Feather name="map-pin" size={12} color={colors.textMuted}/>
                     <Text style={styles.muted}>{collection.location}</Text>
                 </View>
             ) : null }
-            <View style={styles.meta}>
+            <View style={styles.metaItem}>
                 <Feather name="check-circle" size={12} color={colors.textMuted}></Feather>
                 <Text style={styles.muted}>{donePlans.length} de {todoPlans.length}</Text>
             </View>
+            {/* dates */}
+            { collection.start_date && collection.end_date ? (
+            <View style={styles.metaItem}>
+                <Feather name="calendar" size={12} color={colors.textMuted}></Feather>
+                <Text style={styles.muted}>Del {collection.start_date} al {collection.end_date}</Text>
+            </View>
+            ): null}
         </View>
+      </View>
         <View style={styles.actions}>
             <ActionButton
                 icon="edit-2"
@@ -156,7 +164,6 @@ export default function CollectionScreen() {
                 onPress={archive}
             ></ActionButton>
         </View>
-      </View>
 
       <UnderlineTabs
         active={tab}
@@ -254,10 +261,10 @@ const styles = StyleSheet.create({
     marginTop: spacing.xs,
   },
   meta: {
-    flexDirection: 'row',
+    flexDirection: 'column',
     flexWrap: 'wrap',
-    alignItems: 'center',
-    gap: spacing.lg,
+    alignItems: 'flex-start',
+    gap: spacing.sm,
     marginTop: spacing.md,
   },
   metaItem: {
