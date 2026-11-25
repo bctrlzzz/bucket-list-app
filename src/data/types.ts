@@ -6,7 +6,7 @@ export type Collection = {
   description: string | null;
   location: string | null;
   created_at: string;
-  archived_at: string;
+  archived_at: string | null;
   start_date: string | null;
   end_date: string | null;
 };
@@ -21,7 +21,7 @@ export type Plan = {
   pinned: boolean;
   completed_at: string | null;
   created_at: string;
-  archived_at: string;
+  archived_at: string | null;
   plan_dates?: PlanDate[]; // list of dates that supabase returns when asked for it
   price: number | null;
 };
@@ -31,7 +31,7 @@ export type Plan = {
 export type PlanDate = {
   id: string;
   plan_id: string;
-  start_date: string | null;
+  start_date: string;
   start_time: string | null;
   end_time: string |null;
   end_date: string | null;
