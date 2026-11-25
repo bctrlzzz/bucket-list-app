@@ -140,26 +140,27 @@ export default function MyPlansScreen() {
         </View>
       </View>
 
-      {/* TODO: add button at the bottom bar on mobile */}
-      <View style={styles.headerButtons}> 
-        <Link href="/plan/new" asChild>
-          <Pressable style={styles.addButton}>
-            <Feather name="plus" size={14} color={colors.onAccent}></Feather>
-            <Text style={styles.addButtonText}>Añadir plan</Text>
-          </Pressable>
-        </Link>
-
-        <Link href="/collection/new" asChild>
-          <Pressable style={styles.addButton}>
-            <Feather name="plus" size={14} color={colors.onAccent}></Feather>
-            <Text style={styles.addButtonText}>Crear colección</Text>
-          </Pressable>
-        </Link>
-      </View>
-
-      <UnderlineTabs 
+      <UnderlineTabs
         active={tab}
         onChange={setTab}
+        right={
+          <>
+            {/* TODO: add button at the bottom bar on mobile */}
+            <Link href="/plan/new" asChild>
+              <Pressable style={styles.addButton}>
+                <Feather name="plus" size={14} color={colors.onAccent}></Feather>
+                <Text style={styles.addButtonText}>Añadir plan</Text>
+              </Pressable>
+            </Link>
+
+            <Link href="/collection/new" asChild>
+              <Pressable style={styles.addButton}>
+                <Feather name="plus" size={14} color={colors.onAccent}></Feather>
+                <Text style={styles.addButtonText}>Crear colección</Text>
+              </Pressable>
+            </Link>
+          </>
+        }
         tabs={[
           {key: 'todo', label: 'Por hacer', count: todoPlans.length},
           {key: 'done', label: 'Completados', count: donePlans.length}
@@ -312,13 +313,11 @@ const styles = StyleSheet.create({
   addButton: {
     flexDirection: 'row',
     alignItems: 'center',
-    alignSelf: 'flex-end',
     gap: spacing.sm,
     height: 34,
     paddingHorizontal: spacing.md,
     borderRadius: radius.md,
     backgroundColor: colors.accent,
-    marginTop: spacing.md,
   },
   addButtonText: {
     fontFamily: fonts.regular,

@@ -1,4 +1,5 @@
 import { colors, fonts, fontSize, spacing } from '@/constants/theme';
+import type { ReactNode } from 'react';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 // individual tab
@@ -13,12 +14,14 @@ type Props = {
     tabs: Tab[],
     active: string,
     onChange: (key: string) => void, // function that receives a tab's key and returns nothing
+    right?: ReactNode, // optional content (e.g. buttons) aligned to the right, level with the tabs
 };
 
 // switch between inside one screen
-export function UnderlineTabs({tabs, active, onChange}: Props) {
+export function UnderlineTabs({tabs, active, onChange, right}: Props) {
     return (
         <View style={styles.row}>
+            <View style={styles.tabs}>
             {tabs.map((tab) => {
                 const isActive = tab.key === active;
 
@@ -32,6 +35,8 @@ export function UnderlineTabs({tabs, active, onChange}: Props) {
                     </Pressable>
                 )
             })}
+            </View>
+            {right ? <View style={styles.right}>{right}</View> : null}
         </View>
     )
 }
@@ -40,10 +45,22 @@ export function UnderlineTabs({tabs, active, onChange}: Props) {
 const styles = StyleSheet.create({
   row: {
     flexDirection: 'row',
-    gap: spacing.xl,
+    flexWrap: 'wrap',
+    justifyContent: 'space-between',
+    gap: spacing.md,
     borderBottomWidth: 1,
     borderBottomColor: colors.border,
     marginTop: spacing.xl,
+  },
+  tabs: {
+    flexDirection: 'row',
+    gap: spacing.xl,
+  },
+  right: {
+    flexDirection: 'row',
+    alignItems: 'center',
+    gap: spacing.sm,
+    paddingBottom: spacing.xs,
   },
   tab: {
     flexDirection: 'row',
