@@ -120,7 +120,7 @@ export default function ArchiveScreen() {
                         icon='layers'
                         title={collection.title}
                         archivedAt={collection.archived_at}
-                        restoring={restoringId == collection.id}
+                        restoring={restoringId === collection.id}
                         onRestore={() => restore('collections', collection.id)}
                     ></ArchivedRow>
                 ))
@@ -141,7 +141,7 @@ export default function ArchiveScreen() {
                         icon='layers'
                         title={plan.title}
                         archivedAt={plan.archived_at}
-                        restoring={restoringId == plan.id}
+                        restoring={restoringId === plan.id}
                         onRestore={() => restore('plans', plan.id)}
                     ></ArchivedRow>
                 ))
