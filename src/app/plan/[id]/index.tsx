@@ -57,7 +57,8 @@ export default function PlanDetailScreen() {
             .insert({
                 title: `${plan.title} (copia)`,
                 category: plan.category,
-                place: plan.category,
+                place: plan.place,
+                city: plan.city,
                 collection_id: plan.collection_id,
                 price: plan.price,
             })
@@ -89,6 +90,7 @@ export default function PlanDetailScreen() {
         
         if (archiveError) {
             setError('No hemos podido archivar el plan. Inténtalo de nuevo.');
+            setBusy(false);
             return;
         }
 
@@ -132,7 +134,7 @@ export default function PlanDetailScreen() {
                 { plan.collection ? <Detail icon="layers" text={plan.collection.title}/> : null }
                 { plan.price ? <Detail icon="dollar-sign" text={formatPrice(plan.price)}/> : null }
                 <Detail icon={plan.completed_at ? 'check-circle' : 'circle'}
-                        text={plan.completed_at ? `Completado el ${formatDate(plan.created_at)}`: 'Por hacer'}/>
+                        text={plan.completed_at ? `Completado el ${formatDate(plan.completed_at)}`: 'Por hacer'}/>
                 { plan.plan_dates?.[0]?.start_date ? (
                   <Detail icon="calendar" text={formatDate(plan.plan_dates[0].start_date)}></Detail>
                 ) : <Detail icon="calendar" text="Sin fecha prevista"></Detail>}
@@ -151,6 +153,13 @@ export default function PlanDetailScreen() {
                     icon="archive"
                     label="Archivar"
                     onPress={archive}
+                    disabled={busy}
+                ></ActionButton>
+                <ActionButton
+                    icon="copy"
+                    label="Duplicar"
+                    onPress={duplicate}
+                    disabled={busy}
                 ></ActionButton>
             </View>
         </ScrollView>
