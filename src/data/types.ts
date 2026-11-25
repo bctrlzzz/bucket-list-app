@@ -23,6 +23,7 @@ export type Plan = {
   created_at: string;
   archived_at: string;
   plan_dates?: PlanDate[]; // list of dates that supabase returns when asked for it
+  price: number | null;
 };
 
 // plan date type
