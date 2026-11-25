@@ -1,7 +1,7 @@
 {
   "expo": {
     "name": "bucket-list",
-    "slug": "bucket-list",
+    "slug": "bucket-list-app",
     "version": "1.0.0",
     "orientation": "portrait",
     "icon": "./assets/images/icon.png",
@@ -37,6 +37,14 @@
     "experiments": {
       "typedRoutes": true,
       "reactCompiler": true
-    }
+    },
+    "extra": {
+      "router": {
+      },
+      "eas": {
+        "projectId": "6afa7ebf-500e-4033-8a07-6c0b9a33fed0"
+      }
+    },
+    "owner": "bucket-list-app"
   }
 }
