@@ -103,15 +103,25 @@ export function PlanForm({initialValues, submitLabel, onSubmit, onCancel } : Pro
 
     async function submit() {
         if (title.trim() === '') {
-            setError('El plan necesita un título.');
-            return;
+          setError('El plan necesita un título.');
+          return;
         }
 
         // check text that isn't price
         if (price.trim() !== '' && parsePrice(price) === null) {
-          setError('Escribe el precio como número');
+          setError('Escribe el precio como número.');
           return;
         }
+
+        if (endDate && !startDate) {
+          setError('Añade también la fecha de inicio.');
+          return;
+        }
+
+        if (startDate && endDate && endDate > startDate) {
+          setError('La fecha de fin no puede ser anterior a la de inicio.');
+          return;
+        } 
 
         setSaving(true);
         setError(null);
