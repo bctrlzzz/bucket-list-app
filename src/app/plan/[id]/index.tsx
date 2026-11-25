@@ -35,7 +35,7 @@ export default function PlanDetailScreen() {
     useEffect(() => {
         supabase
             .from('plans')
-            .select('*, collection:collections(title)') // plans table references collections
+            .select('*, collection:collections(title), plan_dates(*)') // plans table references collections
             .eq('id', id)
             .single()
             .then(({ data }) => {
@@ -129,8 +129,10 @@ export default function PlanDetailScreen() {
                 { location ? <Detail icon="map-pin" text={location}></Detail> : null } 
                 { plan.collection ? <Detail icon="layers" text={plan.collection.title}/> : null }
                 <Detail icon={plan.completed_at ? 'check-circle' : 'circle'}
-                        text={plan.completed_at ? `Completado el ${formatDate(plan.created_at)}`: 'Por hacer'}
-                />
+                        text={plan.completed_at ? `Completado el ${formatDate(plan.created_at)}`: 'Por hacer'}/>
+                { plan.plan_dates?.[0]?.start_date ? (
+                  <Detail icon="calendar" text={formatDate(plan.plan_dates[0].start_date)}></Detail>
+                ) : <Detail icon="calendar" text="Sin fecha prevista"></Detail>}
                 <Detail icon="calendar" text={`Añadido el ${formatDate(plan.created_at)}`}></Detail>
             </View>
 

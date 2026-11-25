@@ -78,6 +78,13 @@ export function PlanCard({ plan, width, collectionTitle, onTogglePinned, onToggl
                 </View>
              ) : null}
 
+             {plan.plan_dates?.[0]?.start_date ? (
+                <View style={styles.location}>
+                    <Feather name='calendar' size={10} color={colors.textMuted}/>
+                    <Text style={styles.locationText}>{formatDate(plan.plan_dates[0].start_date)}</Text>
+                </View>
+             ) : null}
+
              <View style={styles.footer}>
                 <Text style={styles.footerText}>
                   {plan.completed_at ? `Completado el ${formatDate(plan.completed_at)}` : collectionTitle}

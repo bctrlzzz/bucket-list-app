@@ -4,6 +4,7 @@ import { ScrollView, StyleSheet, Text } from 'react-native';
 import {
   emptyPlanForm,
   PlanForm,
+  savePlanDates,
   toPlanColumns,
   type PlanFormValues,
 } from '@/components/plan-form';
@@ -12,8 +13,15 @@ import { supabase } from '@/lib/supabase';
 
 export default function NewPlanScreen() {
   async function create(values: PlanFormValues) {
-    const { error } = await supabase.from('plans').insert(toPlanColumns(values));
-    if (error) return false;
+    const { data, error } = await supabase
+      .from('plans')
+      .insert(toPlanColumns(values))
+      .select('id')
+      .single();
+    if (error || !data) return false;
+
+    const datesSaved = await savePlanDates(data.id, values);
+    if (!datesSaved) return false;
 
     router.replace('/');
     return true;

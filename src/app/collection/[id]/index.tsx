@@ -33,7 +33,7 @@ export default function CollectionScreen() {
 
             const plansResult = await supabase
             .from('plans')
-            .select()
+            .select('*, plan_dates(*)') // join dates table
             .eq('collection_id', id)
             .order('created_at', { ascending: false })
         

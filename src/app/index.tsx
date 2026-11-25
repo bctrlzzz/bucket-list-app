@@ -19,7 +19,7 @@ import { cardWidthFor } from '@/lib/grid';
 async function fetchMyPlans() {
   const plansResult = await supabase
     .from('plans')
-    .select()
+    .select('*, plan_dates(*)') // join dates table
     .is('archived_at', null) // where archived_at is empty
     .order('pinned', { ascending: false })
     .order('created_at', { ascending: false });

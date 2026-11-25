@@ -1,4 +1,4 @@
-import { PlanForm, PlanFormValues, toPlanColumns } from "@/components/plan-form";
+import { PlanForm, PlanFormValues, savePlanDates, toPlanColumns } from "@/components/plan-form";
 import { colors, fonts, fontSize, spacing } from "@/constants/theme";
 import { Plan } from "@/data/types";
 import { supabase } from "@/lib/supabase";
@@ -14,18 +14,21 @@ export default function EditPlanScreen() {
     useEffect(() => {
         supabase
             .from('plans')
-            .select()
+            .select('*, plan_dates(*)') // join dates table
             .eq('id', id)
             .single()
             .then(({data}) => {
                 if (data) {
                     const plan = data as Plan;
+                    const planDate = plan.plan_dates?.[0];
                     setInitialValues({
                         title: plan.title,
                         category: plan.category ?? '',
                         place: plan.place ?? '',
                         city: plan.city ?? '',
                         collectionId: plan.collection_id,
+                        startDate: planDate?.start_date ?? null,
+                        endDate: planDate?.end_date ?? null,
                     })
                 }
                 setLoading(false);
@@ -40,14 +43,19 @@ export default function EditPlanScreen() {
         const {error} = await supabase.from('plans').update(toPlanColumns(values)).eq('id', id);
         if (error) return false;
 
+        const datesSaved = await savePlanDates(id, values);
+        if (!datesSaved) return false;
+
         goToPlan();
         return true;
     }
 
     if (loading) {
-        <View style={styles.center}>
-            <ActivityIndicator color={colors.accent} />
-        </View>
+        return (
+            <View style={styles.center}>
+                <ActivityIndicator color={colors.accent} />
+            </View>
+        );
     }
 
     if (!initialValues) {

@@ -4,6 +4,7 @@ import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Collection } from '@/data/types';
 import { supabase } from '@/lib/supabase';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
+import { DateField } from './date-fields';
 import { FormButtons } from './form-buttons';
 import { TextField } from './text-field';
 
@@ -14,6 +15,8 @@ export type PlanFormValues = {
     place: string;
     city: string;
     collectionId: string | null;
+    startDate: string | null;
+    endDate: string | null;
 }
 
 // new form
@@ -23,6 +26,8 @@ export const emptyPlanForm: PlanFormValues = {
     place: '',
     city: '',
     collectionId: null,
+    startDate: null,
+    endDate: null,
 };
 
 // turn form values into the plans table columns
@@ -34,6 +39,32 @@ export function toPlanColumns(values: PlanFormValues) {
         city: values.city.trim() || null,
         collection_id: values.collectionId,
     };
+}
+
+// dates live in the plan_dates table
+// returns true if saved (or nothing to save)
+export async function savePlanDates(planId: string, values: PlanFormValues) {
+    const { data: existing, error: readError } = await supabase
+        .from('plan_dates')
+        .select('id')
+        .eq('plan_id', planId)
+        .limit(1);
+    if (readError) return false;
+
+    const row = existing?.[0];
+    const hasDates = values.startDate !== null || values.endDate !== null;
+
+    if (!hasDates) {
+        if (!row) return true;
+        const { error } = await supabase.from('plan_dates').delete().eq('id', row.id);
+        return !error;
+    }
+
+    const dates = { start_date: values.startDate, end_date: values.endDate };
+    const { error } = row
+        ? await supabase.from('plan_dates').update(dates).eq('id', row.id)
+        : await supabase.from('plan_dates').insert({ plan_id: planId, ...dates });
+    return !error;
 }
 
 type Props = {
@@ -49,7 +80,9 @@ export function PlanForm({initialValues, submitLabel, onSubmit, onCancel } : Pro
     const [place, setPlace] = useState(initialValues.place);
     const [city, setCity] = useState(initialValues.city);
     const [collectionId, setCollectionId] = useState<string | null>(initialValues.collectionId);
-    
+    const [startDate, setStartDate] = useState(initialValues.startDate);
+    const [endDate, setEndDate] = useState(initialValues.endDate);
+
     const [collections, setCollections] = useState<Collection[]>([]);
     const [saving, setSaving] = useState(false);
     const [error, setError] = useState<string | null>(null);
@@ -72,7 +105,7 @@ export function PlanForm({initialValues, submitLabel, onSubmit, onCancel } : Pro
         setSaving(true);
         setError(null);
 
-        const saved = await onSubmit({ title, category, place, city, collectionId });
+        const saved = await onSubmit({ title, category, place, city, collectionId, startDate, endDate });
         if (!saved) {
             setError('No hemos podido guardar el plan. Inténtalo de nuevo.');
             setSaving(false);
@@ -85,6 +118,9 @@ export function PlanForm({initialValues, submitLabel, onSubmit, onCancel } : Pro
             <TextField label='Categoría' value={category} onChangeText={setCategory} placeholder=''></TextField>
             <TextField label='Lugar' value={place} onChangeText={setPlace} placeholder=''></TextField>
             <TextField label='Ciudad' value={city} onChangeText={setCity} placeholder=''></TextField>
+            <DateField label='Desde' value={startDate} onChange={setStartDate}></DateField>
+            <DateField label='Hasta' value={endDate} onChange={setEndDate}></DateField>
+        
             <Text style={styles.label}>Colección</Text>
             <View style={styles.chips}>
                 <Pressable

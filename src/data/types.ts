@@ -30,9 +30,9 @@ export type Plan = {
 export type PlanDate = {
   id: string;
   plan_id: string;
-  start_date: string;
+  start_date: string | null;
   start_time: string | null;
   end_time: string |null;
-  end_date: string;
+  end_date: string | null;
   created_at: string;
 }
