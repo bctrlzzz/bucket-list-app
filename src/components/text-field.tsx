@@ -1,5 +1,5 @@
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
-import { StyleSheet, Text, TextInput, View } from 'react-native';
+import { StyleSheet, Text, TextInput, View, type TextInputProps } from 'react-native';
 
 // reusable text field
 
@@ -9,9 +9,10 @@ type Props = {
     onChangeText: (text: string) => void;
     placeholder?: string,
     required?: boolean
+    keyboardType?: TextInputProps['keyboardType']; // only real keyboard names
 };
 
-export function TextField({ label, value, onChangeText, placeholder, required}: Props) {
+export function TextField({ label, value, onChangeText, placeholder, required, keyboardType}: Props) {
     return (
         <View style={styles.field}>
             <Text style={styles.label}>
@@ -24,6 +25,7 @@ export function TextField({ label, value, onChangeText, placeholder, required}: 
                 onChangeText={onChangeText}
                 placeholder={placeholder}
                 placeholderTextColor={colors.textMuted}
+                keyboardType={keyboardType}
             ></TextInput>
         </View>
     )

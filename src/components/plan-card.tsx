@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Plan } from '@/data/types';
+import { formatPrice } from '@/lib/price';
 
 // receiving props in PlanCard
 type Props = {
@@ -84,6 +85,13 @@ export function PlanCard({ plan, width, collectionTitle, onTogglePinned, onToggl
                     <Text style={styles.locationText}>{formatDate(plan.plan_dates[0].start_date)}</Text>
                 </View>
              ) : null}
+
+             {plan.price? (
+              <View style={styles.location}>
+                  <Text style={styles.locationText}>{formatPrice(plan.price)}</Text>
+              </View>
+
+             ): null}
 
              <View style={styles.footer}>
                 <Text style={styles.footerText}>

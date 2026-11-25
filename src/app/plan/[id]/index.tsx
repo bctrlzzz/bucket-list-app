@@ -4,6 +4,7 @@ import { useEffect, useState } from 'react';
 import { ActionButton } from '@/components/action-button';
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Plan } from '@/data/types';
+import { formatPrice } from '@/lib/price';
 import { supabase } from '@/lib/supabase';
 import { Feather } from '@expo/vector-icons';
 import { ActivityIndicator, Pressable, ScrollView, StyleSheet, Text, View } from 'react-native';
@@ -58,6 +59,7 @@ export default function PlanDetailScreen() {
                 category: plan.category,
                 place: plan.category,
                 collection_id: plan.collection_id,
+                price: plan.price,
             })
             .select()
             .single(); // returns the copy
@@ -128,6 +130,7 @@ export default function PlanDetailScreen() {
             <View style={styles.details}>
                 { location ? <Detail icon="map-pin" text={location}></Detail> : null } 
                 { plan.collection ? <Detail icon="layers" text={plan.collection.title}/> : null }
+                { plan.price ? <Detail icon="dollar-sign" text={formatPrice(plan.price)}/> : null }
                 <Detail icon={plan.completed_at ? 'check-circle' : 'circle'}
                         text={plan.completed_at ? `Completado el ${formatDate(plan.created_at)}`: 'Por hacer'}/>
                 { plan.plan_dates?.[0]?.start_date ? (
@@ -155,7 +158,7 @@ export default function PlanDetailScreen() {
 
 }
 
-function Detail({ icon, text }: { icon: 'map-pin' | 'layers' | 'circle' | 'check-circle' | 'calendar'; text: string }) {
+function Detail({ icon, text }: { icon: 'map-pin' | 'layers' | 'circle' | 'check-circle' | 'calendar' | 'dollar-sign'; text: string }) {
   return (
     <View style={styles.detail}>
       <Feather name={icon} size={14} color={colors.textMuted} />
