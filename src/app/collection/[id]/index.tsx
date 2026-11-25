@@ -9,6 +9,7 @@ import { UnderlineTabs } from '@/components/underline-tabs';
 import { colors, fonts, fontSize, spacing } from '@/constants/theme';
 import { applyChanges, toggleCompletedDb, togglePinnedDb } from '@/data/plan-updates';
 import type { Collection, Plan } from '@/data/types';
+import { formatDate } from '@/lib/format';
 import { cardWidthFor } from '@/lib/grid';
 import { supabase } from '@/lib/supabase';
 
@@ -147,7 +148,7 @@ export default function CollectionScreen() {
             { collection.start_date && collection.end_date ? (
             <View style={styles.metaItem}>
                 <Feather name="calendar" size={12} color={colors.textMuted}></Feather>
-                <Text style={styles.muted}>Del {collection.start_date} al {collection.end_date}</Text>
+                <Text style={styles.muted}>{formatDate(collection.start_date, 'short')} - {formatDate(collection.end_date, 'short')}</Text>
             </View>
             ): null}
         </View>

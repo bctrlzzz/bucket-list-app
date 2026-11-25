@@ -3,6 +3,7 @@ import { Pressable, StyleSheet, Text, View } from 'react-native';
 
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Collection } from '@/data/types';
+import { formatDate } from '@/lib/format';
 
 type Props = {
     collection: Collection;
@@ -58,7 +59,7 @@ export function CollectionCard({ collection, width, done, total, onOpen} : Props
           <View style={styles.progressText}>
             <View style={styles.badge}>
               <Feather name="calendar" size={10} color={colors.textMuted}></Feather>
-              <Text style={styles.locationText}>{collection.start_date} - {collection.end_date}</Text>
+              <Text style={styles.locationText}>{formatDate(collection.start_date)} - {formatDate(collection.end_date)}</Text>
             </View>
           </View>
         ) : null}
