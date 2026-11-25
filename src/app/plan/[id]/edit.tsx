@@ -1,6 +1,7 @@
 import { PlanForm, PlanFormValues, savePlanDates, toPlanColumns } from "@/components/plan-form";
 import { colors, fonts, fontSize, spacing } from "@/constants/theme";
 import { Plan } from "@/data/types";
+import { priceToInput } from "@/lib/price";
 import { supabase } from "@/lib/supabase";
 import { router, useLocalSearchParams } from "expo-router";
 import { useEffect, useState } from "react";
@@ -26,6 +27,7 @@ export default function EditPlanScreen() {
                         category: plan.category ?? '',
                         place: plan.place ?? '',
                         city: plan.city ?? '',
+                        price: priceToInput(plan.price),
                         collectionId: plan.collection_id,
                         startDate: planDate?.start_date ?? null,
                         endDate: planDate?.end_date ?? null,

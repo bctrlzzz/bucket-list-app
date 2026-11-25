@@ -2,6 +2,7 @@ import { useEffect, useState } from 'react';
 
 import { colors, fonts, fontSize, radius, spacing } from '@/constants/theme';
 import type { Collection } from '@/data/types';
+import { parsePrice } from '@/lib/price';
 import { supabase } from '@/lib/supabase';
 import { Pressable, StyleSheet, Text, View } from 'react-native';
 import { DateField } from './date-fields';
@@ -14,6 +15,7 @@ export type PlanFormValues = {
     category: string;
     place: string;
     city: string;
+    price: string;
     collectionId: string | null;
     startDate: string | null;
     endDate: string | null;
@@ -25,6 +27,7 @@ export const emptyPlanForm: PlanFormValues = {
     category: '',
     place: '',
     city: '',
+    price: '',
     collectionId: null,
     startDate: null,
     endDate: null,
@@ -37,6 +40,7 @@ export function toPlanColumns(values: PlanFormValues) {
         category: values.category.trim() || null,
         place: values.place.trim() || null,
         city: values.city.trim() || null,
+        price: parsePrice(values.price), // "12,5" -> 12.5, empty -> null
         collection_id: values.collectionId,
     };
 }
@@ -79,6 +83,7 @@ export function PlanForm({initialValues, submitLabel, onSubmit, onCancel } : Pro
     const [category, setCategory] = useState(initialValues.category);
     const [place, setPlace] = useState(initialValues.place);
     const [city, setCity] = useState(initialValues.city);
+    const [price, setPrice] = useState(initialValues.price);
     const [collectionId, setCollectionId] = useState<string | null>(initialValues.collectionId);
     const [startDate, setStartDate] = useState(initialValues.startDate);
     const [endDate, setEndDate] = useState(initialValues.endDate);
@@ -102,10 +107,16 @@ export function PlanForm({initialValues, submitLabel, onSubmit, onCancel } : Pro
             return;
         }
 
+        // check text that isn't price
+        if (price.trim() !== '' && parsePrice(price) === null) {
+          setError('Escribe el precio como número');
+          return;
+        }
+
         setSaving(true);
         setError(null);
 
-        const saved = await onSubmit({ title, category, place, city, collectionId, startDate, endDate });
+        const saved = await onSubmit({ title, category, place, city, collectionId, price, startDate, endDate });
         if (!saved) {
             setError('No hemos podido guardar el plan. Inténtalo de nuevo.');
             setSaving(false);
@@ -118,6 +129,7 @@ export function PlanForm({initialValues, submitLabel, onSubmit, onCancel } : Pro
             <TextField label='Categoría' value={category} onChangeText={setCategory} placeholder=''></TextField>
             <TextField label='Lugar' value={place} onChangeText={setPlace} placeholder=''></TextField>
             <TextField label='Ciudad' value={city} onChangeText={setCity} placeholder=''></TextField>
+            <TextField label='Precio' value={price} onChangeText={setPrice} placeholder='34,99€' keyboardType='decimal-pad'></TextField>
             <DateField label='Desde' value={startDate} onChange={setStartDate}></DateField>
             <DateField label='Hasta' value={endDate} onChange={setEndDate}></DateField>
         
